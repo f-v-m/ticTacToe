@@ -24,6 +24,6 @@ public class Human {
     public String getGameSign(){
         return gameSign;
     }
-//HELLO
+//HELLO     !!!
 
 }
