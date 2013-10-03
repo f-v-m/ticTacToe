@@ -23,6 +23,8 @@ public class Main {
 
         field.createField();
         for(;;){
+
+
             field.inputSign(player1.getGameSign());
             if (field.check(player1.getGameSign())){
                 System.out.println(player1.getName() + " WIN!!!!!!");
@@ -37,6 +39,10 @@ public class Main {
             if (field.check(player2.getGameSign())){
                 System.out.println(player2.getName() + " WIN!!!!!!");
                 break;
+            }
+            if (field.compCheckForWin()){
+                System.out.println(field.emptyCoordinate[0] + "   " + field.emptyCoordinate[1]);
+                System.in.read();
             }
 
         }
