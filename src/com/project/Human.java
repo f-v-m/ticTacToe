@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Human {
     private static final int MIN_NAME_LENGTH = 3;
 
-    private String name;
+    public String name;
     private String gameSign;
     Scanner scan = new Scanner(System.in);
 

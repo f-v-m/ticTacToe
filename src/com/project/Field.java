@@ -1,7 +1,6 @@
 package com.project;
 
 import java.io.IOException;
-import java.io.Console;
 import java.util.Scanner;
 
 public class Field {
@@ -11,7 +10,12 @@ public class Field {
     private String[][] field = new String[FIELD_SIZE][FIELD_SIZE];
     public int[] emptyCoordinate = new int[COORDINATE_NUMBER];
     private int[] coordinates = new int[COORDINATE_NUMBER];
+    public int lastCoordinateX, lastCoordinateY;
 
+
+    public int squareDistance(int x1, int y1, int x2, int y2){
+        return ((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+    }
 
     public void changeCell(String sign, int coordinate1, int coordinate2){
         field[coordinate1][coordinate2] = sign;
@@ -38,6 +42,8 @@ public class Field {
 
         clearConsole();
         changeCell(sign, coordinates[0], coordinates[1]);
+        lastCoordinateX = coordinates[0];
+        lastCoordinateY = coordinates[1];
         showField();
     }
 
@@ -138,93 +144,113 @@ public class Field {
     }
 
 
-    public boolean compCheckForWinHor(){
-        int xQnty, oQnty;
+    public boolean compCheckForWinHor(String sign){
+        int signQnty;
         for (int i = 0; i < FIELD_SIZE; i ++){
-            xQnty = 0;
-            oQnty = 0;
+            signQnty = 0;
             for (int j = 0; j < FIELD_SIZE; j++){
-                if (field[i][j] == "X"){
-                    xQnty++;
-                }
-                else if (field[i][j] == "0"){
-                    oQnty++;
+                if (field[i][j] == sign){
+                    signQnty++;
                 }
                 else {
-                    emptyCoordinate[0] = i + 1;
-                    emptyCoordinate[1] = j + 1;
+                    emptyCoordinate[0] = i;
+                    emptyCoordinate[1] = j;
                 }
 
             }
-            if  (xQnty == 2 || oQnty == 2){
+            if  (signQnty == 2){
                 return true;
             }
         }
         return false;
     }
 
-    public boolean compCheckForWinVer(){
-        int xQnty, oQnty;
+    public boolean compCheckForWinVer(String sign){
+        int signQnty;
         for (int i = 0; i < FIELD_SIZE; i ++){
-            xQnty = 0;
-            oQnty = 0;
+            signQnty = 0;
             for (int j = 0; j < FIELD_SIZE; j++){
-                if (field[j][i] == "X"){
-                    xQnty++;
-                }
-                else if (field[j][i] == "0"){
-                    oQnty++;
+                if (field[j][i] == sign){
+                    signQnty++;
                 }
                 else {
-                    emptyCoordinate[0] = j + 1;
-                    emptyCoordinate[1] = i + 1;
+                    emptyCoordinate[0] = j;
+                    emptyCoordinate[1] = i;
                 }
             }
-            if  (xQnty == 2 || oQnty == 2){
+            if  (signQnty == 2){
                 return true;
             }
         }
         return false;
     }
 
-    public boolean compCheckForWinDiagonal(){
-        int xQnty, oQnty;
+    public boolean compCheckForWinDiagonal(String sign){
+        int signQnty = 0;
         for (int i = 0; i < FIELD_SIZE; i ++){
-            xQnty = 0;
-            oQnty = 0;
+            if (field[i][i] == sign){
+                signQnty++;
+            }
 
-            if (field[i][i] == "X"){
-                xQnty++;
-            }
-            else if (field[i][i] == "0"){
-                oQnty++;
-            }
             else {
-                emptyCoordinate[0] = i+1;
-                emptyCoordinate[1] = i+1;
+                emptyCoordinate[0] = i;
+                emptyCoordinate[1] = i;
+            }
+        }
+        if (signQnty == 2){
+            return true;
+        }
+        signQnty = 0;
+        for (int i = 0; i < FIELD_SIZE; i ++){
+            if (field[FIELD_SIZE-1-i][i] == sign){
+                signQnty++;
             }
 
-            if  (xQnty == 2 || oQnty == 2){
-                return true;
+            else {
+                emptyCoordinate[0] = i;
+                emptyCoordinate[1] = i;
             }
+        }
 
+        if  (signQnty == 2){
+            return true;
         }
         return false;
     }
 
-    public boolean compCheckForWin(){
-        if (compCheckForWinHor()){
-            return true;
+    public boolean compCheckForWin(String sign){
+        return (compCheckForWinHor(sign) || compCheckForWinVer(sign) || compCheckForWinDiagonal(sign));
+    }
+
+
+    public void compMoveFirst(String compSign, String playerSign){
+        //check for win(is there almost full line)
+        int maxDistance = 0;
+        if ((compCheckForWin(compSign) | compCheckForWin(playerSign)) & field[emptyCoordinate[0]][emptyCoordinate[1]] == " "){
+            changeCell(compSign, emptyCoordinate[0],emptyCoordinate[1]);
         }
-        else if (compCheckForWinVer()){
-            return true;
+
+        else if (field[1][1] == " "){
+            changeCell(compSign, 1, 1);
         }
-        else if (compCheckForWinDiagonal()){
-            return true;
+
+        else  {
+            maxDistance = 0;
+            for (int i = 0; i < FIELD_SIZE; i++){
+                for (int j = 0; j < FIELD_SIZE; j++){
+                    int distanceFrom0 = squareDistance(lastCoordinateX, lastCoordinateY, i, j);
+                    System.out.println(distanceFrom0);
+                    if ((field[i][j] == " ") && distanceFrom0 > maxDistance){
+                        maxDistance = distanceFrom0;
+                        System.out.println("max dist = " + maxDistance);
+                        emptyCoordinate[0] = i;
+                        emptyCoordinate[1] = j;
+                    }
+                }
+            }
+            changeCell(compSign, emptyCoordinate[0], emptyCoordinate[1]);
         }
-        else {
-            return false;
-        }
+        showField();
     }
 
 
