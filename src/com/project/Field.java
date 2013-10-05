@@ -226,7 +226,8 @@ public class Field {
     public void compMoveFirst(String compSign, String playerSign){
         //check for win(is there almost full line)
         int maxDistance = 0;
-        if ((compCheckForWin(compSign) | compCheckForWin(playerSign)) & field[emptyCoordinate[0]][emptyCoordinate[1]] == " "){
+        if ((compCheckForWin(compSign) | compCheckForWin(playerSign)) &
+                field[emptyCoordinate[0]][emptyCoordinate[1]] == " "){
             changeCell(compSign, emptyCoordinate[0],emptyCoordinate[1]);
         }
 
