@@ -158,7 +158,7 @@ public class Field {
                 }
 
             }
-            if  (signQnty == 2){
+            if  ((signQnty == 2) && (field[emptyCoordinate[0]][emptyCoordinate[1]] == " ")){
                 return true;
             }
         }
@@ -178,7 +178,7 @@ public class Field {
                     emptyCoordinate[1] = i;
                 }
             }
-            if  (signQnty == 2){
+            if  ((signQnty == 2) && (field[emptyCoordinate[0]][emptyCoordinate[1]] == " ")){
                 return true;
             }
         }
@@ -197,7 +197,7 @@ public class Field {
                 emptyCoordinate[1] = i;
             }
         }
-        if (signQnty == 2){
+        if ((signQnty == 2) && (field[emptyCoordinate[0]][emptyCoordinate[1]] == " ")){
             return true;
         }
         signQnty = 0;
@@ -207,27 +207,27 @@ public class Field {
             }
 
             else {
-                emptyCoordinate[0] = i;
+                emptyCoordinate[0] = FIELD_SIZE-1-i;
                 emptyCoordinate[1] = i;
             }
         }
 
-        if  (signQnty == 2){
+        if  ((signQnty >= 2) && (field[emptyCoordinate[0]][emptyCoordinate[1]] == " ")){
             return true;
         }
         return false;
     }
 
-    public boolean compCheckForWin(String sign){
-        return (compCheckForWinHor(sign) || compCheckForWinVer(sign) || compCheckForWinDiagonal(sign));
+    public boolean compCheckForWin(String sign) throws IOException {
+        boolean a = (compCheckForWinHor(sign) || compCheckForWinVer(sign) || compCheckForWinDiagonal(sign));
+        return a;
     }
 
 
-    public void compMoveFirst(String compSign, String playerSign){
+    public void compMoveFirst(String compSign, String playerSign) throws IOException {
         //check for win(is there almost full line)
         int maxDistance = 0;
-        if ((compCheckForWin(compSign) | compCheckForWin(playerSign)) &
-                field[emptyCoordinate[0]][emptyCoordinate[1]] == " "){
+        if (compCheckForWin(compSign) || compCheckForWin(playerSign)){
             changeCell(compSign, emptyCoordinate[0],emptyCoordinate[1]);
         }
 
@@ -240,10 +240,8 @@ public class Field {
             for (int i = 0; i < FIELD_SIZE; i++){
                 for (int j = 0; j < FIELD_SIZE; j++){
                     int distanceFrom0 = squareDistance(lastCoordinateX, lastCoordinateY, i, j);
-                    System.out.println(distanceFrom0);
                     if ((field[i][j] == " ") && distanceFrom0 > maxDistance){
                         maxDistance = distanceFrom0;
-                        System.out.println("max dist = " + maxDistance);
                         emptyCoordinate[0] = i;
                         emptyCoordinate[1] = j;
                     }
